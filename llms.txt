@@ -1,13 +1,14 @@
 # @trysac/correlation-id
 
-> Framework-agnostic correlation id middleware for node:http with W3C Trace Context traceparent parsing, AsyncLocalStorage context and Express and Fastify adapters TypeScript library for Node.js 20+, published as ES modules with type declarations. MIT.
+> Framework-agnostic correlation id middleware for node:http with W3C Trace Context traceparent parsing, AsyncLocalStorage context and Express and Fastify adapters. TypeScript library for Node.js 20+, published as ES modules with type declarations. MIT.
 
 ## Docs
 
-- [README](README.md): problem, installation and usage example
+- [README](README.md): problem, installation, usage example and API summary
 - [AGENTS.md](AGENTS.md): commands, folder map, conventions and limits for contributors and agents
-- [Architecture](docs/ARCHITECTURE.md): modules and boundaries
-- [Testing](docs/TESTING.md): how tests and coverage work
+- [Architecture](docs/ARCHITECTURE.md): modules, boundaries and request flow
+- [Testing](docs/TESTING.md): test file and coverage
+- [Security](docs/SECURITY.md): threat model and practices
 - [Decisions](docs/decisions/0001-record-architecture-decisions.md): architecture decision records
 
 ## Optional
