@@ -121,9 +121,7 @@ export interface Correlation {
 export type Next = () => void;
 
 /** Express compatible middleware. */
-export interface ExpressMiddleware {
-  (req: RequestLike, res: ResponseLike, next: Next): void;
-}
+export type ExpressMiddleware = (req: RequestLike, res: ResponseLike, next: Next) => void;
 
 /** Minimal Fastify request. */
 export interface FastifyRequestLike {
@@ -136,9 +134,7 @@ export interface FastifyReplyLike {
 }
 
 /** Fastify `onRequest` hook. */
-export interface FastifyHook {
-  (req: FastifyRequestLike, reply: FastifyReplyLike, done: Next): void;
-}
+export type FastifyHook = (req: FastifyRequestLike, reply: FastifyReplyLike, done: Next) => void;
 
 function isValidId(value: unknown, pattern: RegExp): value is string {
   return typeof value === "string" && pattern.test(value) && !ZEROS.test(value);
@@ -249,9 +245,7 @@ interface Resolved {
   readonly emit: Emit;
 }
 
-function makeEmitter(
-  onEvent: ((e: CorrelationEvent) => void) | undefined,
-): Emit {
+function makeEmitter(onEvent: ((e: CorrelationEvent) => void) | undefined): Emit {
   return (type) => {
     if (onEvent === undefined) {
       return;
@@ -361,8 +355,7 @@ function build(req: RequestLike, cfg: Resolved): CorrelationContext {
     cfg.emit("invalid_traceparent");
   }
   const traceId = incoming === null ? newTraceId : incoming.traceId;
-  const tracestate =
-    incoming === null ? undefined : readTracestate(headers.tracestate, cfg.emit);
+  const tracestate = incoming === null ? undefined : readTracestate(headers.tracestate, cfg.emit);
   const incomingId = readRequestId(headers[cfg.header], cfg);
   const sampled = incoming !== null && (incoming.flags & 1) === 1;
   return {

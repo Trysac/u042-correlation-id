@@ -118,16 +118,14 @@ function tracedGet(port: number, id: string, delay: number): Promise<Reply> {
 
 describe("parseTraceparent", () => {
   it("parses the W3C example headers", () => {
-    expect(
-      lib.parseTraceparent(
-        "00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01",
-      ),
-    ).toEqual({
-      version: "00",
-      traceId: "0af7651916cd43dd8448eb211c80319c",
-      parentId: "b7ad6b7169203331",
-      flags: 1,
-    });
+    expect(lib.parseTraceparent("00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01")).toEqual(
+      {
+        version: "00",
+        traceId: "0af7651916cd43dd8448eb211c80319c",
+        parentId: "b7ad6b7169203331",
+        flags: 1,
+      },
+    );
     const unsampled = lib.parseTraceparent(
       "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
     );
