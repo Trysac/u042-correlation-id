@@ -162,22 +162,14 @@ describe("parseTraceparent", () => {
 
   it("handles future versions per section 3.2.4", () => {
     expect(
-      lib.parseTraceparent(
-        "01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01-extra",
-      ),
+      lib.parseTraceparent("01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01-extra"),
     ).toEqual({ version: "01", traceId: TRACE, parentId: PARENT, flags: 1 });
+    expect(lib.parseTraceparent(`01-${TRACE}-${PARENT}-01`)?.version).toBe("01");
     expect(
-      lib.parseTraceparent(`01-${TRACE}-${PARENT}-01`)?.version,
-    ).toBe("01");
-    expect(
-      lib.parseTraceparent(
-        "01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01x",
-      ),
+      lib.parseTraceparent("01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01x"),
     ).toBeNull();
     expect(
-      lib.parseTraceparent(
-        "01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-0",
-      ),
+      lib.parseTraceparent("01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-0"),
     ).toBeNull();
     const longest = `01-${TRACE}-${PARENT}-01-${"x".repeat(456)}`;
     expect(longest.length).toBe(512);
@@ -189,14 +181,11 @@ describe("formatTraceparent", () => {
   it("always emits version 00", () => {
     const ids = { traceId: TRACE, spanId: PARENT };
     expect(lib.formatTraceparent({ ...ids, sampled: true })).toBe(VALID);
-    expect(lib.formatTraceparent({ ...ids, sampled: false })).toBe(
-      `00-${TRACE}-${PARENT}-00`,
-    );
+    expect(lib.formatTraceparent({ ...ids, sampled: false })).toBe(`00-${TRACE}-${PARENT}-00`);
   });
 
   it("rejects malformed ids", () => {
-    const bad = () =>
-      lib.formatTraceparent({ traceId: "zz", spanId: PARENT, sampled: true });
+    const bad = () => lib.formatTraceparent({ traceId: "zz", spanId: PARENT, sampled: true });
     expect(codeOf(bad)).toBe("invalid_option");
     const zero = () =>
       lib.formatTraceparent({
@@ -215,9 +204,7 @@ describe("context creation", () => {
     expect(r.ctx?.parentSpanId).toBe("b7ad6b7169203331");
     expect(r.ctx?.spanId).toBe("1111111111111111");
     expect(r.ctx?.sampled).toBe(true);
-    expect(r.out.traceparent).toBe(
-      "00-0af7651916cd43dd8448eb211c80319c-1111111111111111-01",
-    );
+    expect(r.out.traceparent).toBe("00-0af7651916cd43dd8448eb211c80319c-1111111111111111-01");
     expect(r.out["x-request-id"]).toBe(TRACE);
     expect(r.events).toEqual([]);
   });
@@ -234,12 +221,8 @@ describe("context creation", () => {
   });
 
   it("derives sampled from the lowest flag bit", () => {
-    expect(probe({ traceparent: `00-${TRACE}-${PARENT}-03` }).ctx?.sampled).toBe(
-      true,
-    );
-    expect(probe({ traceparent: `00-${TRACE}-${PARENT}-02` }).ctx?.sampled).toBe(
-      false,
-    );
+    expect(probe({ traceparent: `00-${TRACE}-${PARENT}-03` }).ctx?.sampled).toBe(true);
+    expect(probe({ traceparent: `00-${TRACE}-${PARENT}-02` }).ctx?.sampled).toBe(false);
   });
 
   it("uses random ids by default", () => {
@@ -323,9 +306,7 @@ describe("tracestate", () => {
     expect(r32.ctx?.tracestate).toBe(withEmpty);
     const edge = `a=${"b".repeat(510)}`;
     expect(edge.length).toBe(512);
-    expect(probe({ traceparent: VALID, tracestate: edge }).ctx?.tracestate).toBe(
-      edge,
-    );
+    expect(probe({ traceparent: VALID, tracestate: edge }).ctx?.tracestate).toBe(edge);
   });
 
   it("drops tracestate for an invalid traceparent", () => {
@@ -483,8 +464,7 @@ describe("adapters", () => {
     const hook = lib.fastifyHook(c);
     const res = fakeRes();
     const viaExpress = () => mw({ headers: {} }, res, () => undefined);
-    const viaFastify = () =>
-      hook({ raw: { headers: {} } }, { raw: res }, () => undefined);
+    const viaFastify = () => hook({ raw: { headers: {} } }, { raw: res }, () => undefined);
     expect(codeOf(viaExpress)).toBe("invalid_generator");
     expect(codeOf(viaFastify)).toBe("invalid_generator");
   });
@@ -515,18 +495,13 @@ describe("adapters", () => {
 
 describe("errors and options", () => {
   it("rejects invalid options with invalid_option", () => {
-    const make = (o: unknown) => () =>
-      lib.createCorrelation(o as lib.CorrelationOptions);
+    const make = (o: unknown) => () => lib.createCorrelation(o as lib.CorrelationOptions);
     expect(codeOf(make({ requestIdHeader: "X Bad" }))).toBe("invalid_option");
     expect(codeOf(make({ requestIdHeader: "" }))).toBe("invalid_option");
     expect(codeOf(make({ requestIdHeader: "X-Upper" }))).toBe("invalid_option");
     expect(codeOf(make({ requestIdHeader: 5 }))).toBe("invalid_option");
-    expect(codeOf(make({ requestIdHeader: "traceparent" }))).toBe(
-      "invalid_option",
-    );
-    expect(codeOf(make({ trustIncomingRequestId: "yes" }))).toBe(
-      "invalid_option",
-    );
+    expect(codeOf(make({ requestIdHeader: "traceparent" }))).toBe("invalid_option");
+    expect(codeOf(make({ trustIncomingRequestId: "yes" }))).toBe("invalid_option");
     expect(codeOf(make({ idGenerator: {} }))).toBe("invalid_option");
     expect(codeOf(make({ idGenerator: null }))).toBe("invalid_option");
     expect(codeOf(make({ onEvent: "nope" }))).toBe("invalid_option");
