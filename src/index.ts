@@ -259,7 +259,7 @@ function makeEmitter(onEvent: ((e: CorrelationEvent) => void) | undefined): Emit
 }
 
 function resolve(options: CorrelationOptions | undefined): Resolved {
-  const o = options ?? {};
+  const o = options === undefined ? {} : options;
   if (typeof o !== "object" || o === null) {
     throw new CorrelationError("invalid_option", "options must be an object");
   }
