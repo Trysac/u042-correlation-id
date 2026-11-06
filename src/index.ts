@@ -274,7 +274,7 @@ function resolve(options: CorrelationOptions | undefined): Resolved {
   if (typeof trust !== "boolean") {
     throw new CorrelationError("invalid_option", "bad trustIncomingRequestId");
   }
-  const generator = o.idGenerator ?? defaultGenerator;
+  const generator = o.idGenerator === undefined ? defaultGenerator : o.idGenerator;
   if (
     typeof generator !== "object" ||
     generator === null ||
