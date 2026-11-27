@@ -1,7 +1,6 @@
 # correlation-id
 
-[![npm version](https://img.shields.io/npm/v/@trysac/correlation-id.svg)](https://www.npmjs.com/package/@trysac/correlation-id)
-[![license: MIT](https://img.shields.io/npm/l/@trysac/correlation-id.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/Trysac/u042-correlation-id/actions/workflows/ci.yml/badge.svg)](https://github.com/Trysac/u042-correlation-id/actions/workflows/ci.yml)
 
 Framework-agnostic correlation id middleware for node:http with W3C Trace Context traceparent parsing, AsyncLocalStorage context and Express and Fastify adapters.
@@ -12,9 +11,15 @@ Logs from one request across services cannot be joined when every service invent
 
 ## Install
 
+Not published to npm yet. Build it from a clone, then install it from the local path:
+
 ```sh
-npm install @trysac/correlation-id
+git clone https://github.com/Trysac/u042-correlation-id.git
+cd u042-correlation-id && npm ci && npm run build
+cd ../your-project && npm install ../u042-correlation-id
 ```
+
+Imports keep the package name: `import { ... } from "@trysac/correlation-id"`.
 
 Requires Node.js 20 or newer. The package ships ES modules with TypeScript declarations and has no runtime dependencies.
 
